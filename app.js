@@ -1,21 +1,27 @@
-let fr = 60;
+let fr = 0.25;
 var skeleton_idle;
 var skeleton_idle_spritesheet;
 var skel_enemy;
+var i = 0;
 var level_one;
 var ground_level = 100;
 
 function preload() {
-    skeleton_idle = loadImage('media/spritesheets/enemies/skeleton/idle.png');
+    skeleton_idle = loadImage('media/spritesheets/enemies/skeleton/attack.png');
 }
 
 function setup() {
     var canvas = createCanvas(1200, 800);
     canvas.parent("processing");
     frameRate(fr);
-        for(var i; i < fr; i+=25) {
-            skeleton_idle_spritesheet = skeleton_idle.get(i, 0, 24, 32);
+
+    setInterval(function(){
+        if(i > 773) {
+            i = 0;
         }
+        i+= 43;
+        skeleton_idle_spritesheet = skeleton_idle.get(i, 0, 43, 37);
+    }, 1);
     level_one = new Level_one();
     skel_enemy = new Skel_enemy();
 }
@@ -42,8 +48,8 @@ function Level_one(){
 }
 
 function Skel_enemy(){
-    this.width = 24 * 3;
-    this.height = 32 * 3;
+    this.width = 43 * 3;
+    this.height = 37 * 3;
 	this.x = 100;
 	this.y = height - ground_level - this.height;
 
