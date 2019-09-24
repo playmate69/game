@@ -1,0 +1,65 @@
+@font-face {
+	font-family: 'Graphik';
+	font-style: normal;
+	font-weight: normal;
+	src: url('font/Graphik.ttf');
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+h1,h2,h3,h4,h5,h6,span,a,p {
+    font-family: Graphik;
+    color: #000;
+}
+
+.a-fixed {
+    position: fixed;
+}
+
+.a-absolute {
+    position: absolute;
+}
+
+.a-absolute.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.a-relative {
+    position: relative;
+}
+
+.a-full {
+    width: 100%;
+    height: 100%;
+}
+.a-table {
+    display: table;
+}
+.a-table--cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+.a-text--center {
+    text-align: center;
+}
+
+.a-bg--img {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+/*========================*/
