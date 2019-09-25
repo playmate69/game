@@ -1,12 +1,16 @@
-let fr = 0.25;
-var skeleton_idle;
-var skeleton_idle_spritesheet;
+let fr = 30;
+let skeleton_idle_data;
+let skeleton_idle;
 var skel_enemy;
-var i = 0;
+let animation = [];
+let frames;
+let pos;
+let img;
 var level_one;
 var ground_level = 100;
 
 function preload() {
+    skeleton_idle_data = loadJSON('media/spritesheets/enemies/skeleton/attack.json');
     skeleton_idle = loadImage('media/spritesheets/enemies/skeleton/attack.png');
 }
 
@@ -14,14 +18,12 @@ function setup() {
     var canvas = createCanvas(1200, 800);
     canvas.parent("processing");
     frameRate(fr);
-
-    setInterval(function(){
-        if(i > 773) {
-            i = 0;
-        }
-        i+= 43;
-        skeleton_idle_spritesheet = skeleton_idle.get(i, 0, 43, 37);
-    }, 1);
+    frames = skeleton_idle_data.frames;
+    for(i = 0; i < frames.length; i++) {
+        pos = frames[i].position;
+        img = skeleton_idle.get(pos.x, pos.y, pos.w, pos.h);
+        animation.push(img);
+    }
     level_one = new Level_one();
     skel_enemy = new Skel_enemy();
 }
@@ -31,7 +33,7 @@ function setup() {
 function draw() {
     background('lightblue');
     level_one.display();
-    skel_enemy.display();
+    //skel_enemy.display();
 }
 
 function Level_one(){
@@ -57,7 +59,6 @@ function Skel_enemy(){
         noStroke();
         fill('black');
         //rect(this.x, height-ground_level-this.height, this.width, this.height);
-        image(skeleton_idle_spritesheet, this.x, this.y, this.width, this.height);
-
+        image(animation[1], this.x, height-ground_level-this.height, this.width, this.height);
 	}
 }
