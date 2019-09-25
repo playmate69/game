@@ -1,14 +1,20 @@
 let fr = 30;
 //player vars
 var player; //player object
+var player_states; //player states (in image)
 var player_facing_left = false;
 var player_facing_right = true; //default facing
 var player_run_left = false;
 var player_run_right = false;
-var player_states; //player states (in image)
+var player_attack = false;
 var player_data_idle_left;
 var player_data_idle_right; //default state
-var level_one;
+var player_data_attack_left;
+var player_data_attack_right; //default state
+var world_one;
+//enemy vars
+var enemy; //enemy object
+var world_one;
 var ground_level = 100;
 
 function preload() {
@@ -18,6 +24,8 @@ function preload() {
     player_data_idle_right = loadJSON('media/spritesheets/player/idle_right.json');
     player_data_run_left = loadJSON('media/spritesheets/player/run_left.json');
     player_data_run_right = loadJSON('media/spritesheets/player/run_right.json');
+    player_data_attack_left = loadJSON('media/spritesheets/player/attack_left.json');
+    player_data_attack_right = loadJSON('media/spritesheets/player/attack_right.json');
 }
 
 //setup
@@ -25,16 +33,19 @@ function setup() {
     var canvas = createCanvas(1200, 800);
     canvas.parent("processing");
     frameRate(fr);
+    enemy = new Enemy();
     player = new Player();
-    level_one = new Level_one();
+    world_one = new World_one();
 }
 
 //draw
 function draw() {
     background('lightblue');
-    level_one.display();
+    world_one.display();
+    enemy.display();
     player.display();
     player.move();
+    player.attack();
 }
 
 function mouseClicked() {
@@ -42,7 +53,7 @@ function mouseClicked() {
 }
 
 //level one
-function Level_one(){
+function World_one(){
     this.width = 100;
     this.height = 100;
 	this.x = random(0, width - this.width);
@@ -63,9 +74,9 @@ function Player() {
 	this.y = height - ground_level - this.height;
     this.display = () => {
         if(player_facing_left == true) {
-            if(player_run_left == true) {
+            if(player_attack == true) {
                 let animation = [];
-                let frames = player_data_run_left.frames;
+                let frames = player_data_attack_left.frames;
                 for(i = 0; i < frames.length; i++) {
                     let pos = frames[i].position;
                     let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
@@ -73,20 +84,31 @@ function Player() {
                 }
                 image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
             } else {
-                let animation = [];
-                let frames = player_data_idle_left.frames;
-                for(i = 0; i < frames.length; i++) {
-                    let pos = frames[i].position;
-                    let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
-                    animation.push(img);
+                if(player_run_left == true) {
+                    let animation = [];
+                    let frames = player_data_run_left.frames;
+                    for(i = 0; i < frames.length; i++) {
+                        let pos = frames[i].position;
+                        let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
+                        animation.push(img);
+                    }
+                    image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
+                } else {
+                    let animation = [];
+                    let frames = player_data_idle_left.frames;
+                    for(i = 0; i < frames.length; i++) {
+                        let pos = frames[i].position;
+                        let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
+                        animation.push(img);
+                    }
+                    image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
                 }
-                image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
             }
         }
         if(player_facing_right == true) {
-            if(player_run_right == true) {
+            if(player_attack == true) {
                 let animation = [];
-                let frames = player_data_run_right.frames;
+                let frames = player_data_attack_right.frames;
                 for(i = 0; i < frames.length; i++) {
                     let pos = frames[i].position;
                     let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
@@ -94,19 +116,37 @@ function Player() {
                 }
                 image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
             } else {
-                let animation = [];
-                let frames = player_data_idle_right.frames;
-                for(i = 0; i < frames.length; i++) {
-                    let pos = frames[i].position;
-                    let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
-                    animation.push(img);
+                if(player_run_right == true) {
+                    let animation = [];
+                    let frames = player_data_run_right.frames;
+                    for(i = 0; i < frames.length; i++) {
+                        let pos = frames[i].position;
+                        let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
+                        animation.push(img);
+                    }
+                    image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
+                } else {
+                    let animation = [];
+                    let frames = player_data_idle_right.frames;
+                    for(i = 0; i < frames.length; i++) {
+                        let pos = frames[i].position;
+                        let img = player_states.get(pos.x, pos.y, pos.w, pos.h);
+                        animation.push(img);
+                    }
+                    image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
                 }
-                image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
             }
         }
     } //end display
     this.move = () => {
         if (keyIsPressed === true) {
+
+            if (keyIsDown(87)) {
+                player_attack = true;
+            } else {
+                player_attack = false;
+            }
+
             if (keyIsDown(LEFT_ARROW)) {
                 this.x -= 5;
                 player_facing_left = true;
@@ -126,46 +166,25 @@ function Player() {
             player_run_right = false;
         }
     } //end move
-}
-
-/*
-function Skel_enemy(){
-    if (attack == true) {
-        this.width = 43 * 3;
-        this.height = 37 * 3;
-    } else {
-        this.width = 24 * 3;
-        this.height = 32 * 3;
-    }
-	this.x = 100;
-	this.y = height - ground_level - this.height;
-
-	this.display = function(){
-        noStroke();
-        fill('black');
-        if (attack == true) {
-            let animation = [];
-            let frames = skeleton_attack_data.frames;
-                for(i = 0; i < frames.length-1; i++) {
-                    let pos = frames[i].position;
-                    let img = skeleton_attack.get(pos.x, pos.y, pos.w, pos.h);
-                    animation.push(img);
-                }
-                image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
-
-                setTimeout( () => {
-                    attack = false;
-                }, animation.length*(60%animation.length));
-        } else {
-            let animation = [];
-            let frames = skeleton_idle_data.frames;
-                for(i = 0; i < frames.length-1; i++) {
-                    let pos = frames[i].position;
-                    let img = skeleton_idle.get(pos.x, pos.y, pos.w, pos.h);
-                    animation.push(img);
-                }
-                image(animation[frameCount % animation.length], this.x, this.y, this.width, this.height);
+    this.attack = () => {
+        if(player_attack == true) {
+            if(this.x >= enemy.x - 25 && this.x + this.width <= enemy.x + enemy.width + 25) {
+                console.log('collide');
+                enemy.x = random(0, width - this.width);
+            }
         }
-	} // end display
-} //end skel_enemy
-*/
+    } //end attack
+} //end player object
+
+//enemy object function
+function Enemy() {
+    this.width = 32 * 3;
+    this.height = 32 * 3;
+	this.x = random(0, width - this.width);
+	this.y = height - ground_level - this.height;
+    this.display = () => {
+        noStroke();
+        fill('white');
+        rect(this.x, this.y, this.width, this.height);
+    } //end display
+} //end enemy object
