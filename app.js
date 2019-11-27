@@ -70,7 +70,7 @@ function Cell(i, j) {
             right   = grid[index(i+1, j)],
             bottom  = grid[index(i, j+1)],
             left    = grid[index(i-1, j)];
-        var cordinates = [right, bottom];
+        var cordinates = [top, right, bottom, left];
         for(var i=0;i<cordinates.length;i++) {
             if(!cordinates[i].visited) {
                 neighbors.push(cordinates[i]);
