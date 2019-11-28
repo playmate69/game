@@ -1,7 +1,7 @@
-let fr = 30;
+let fr = 15;
 var rows, cols;
-var grid = [];
 var w = 80;
+var grid = [];
 var current;
 //setup
 function setup() {
@@ -24,7 +24,9 @@ function draw() {
     background('darkgrey');
     for(var i=0;i<grid.length;i++) {
         grid[i].display();
+        grid[i].walls();
     }
+
     current.visited = true;
     current.checkNeighbors();
 }
@@ -66,16 +68,42 @@ function Cell(i, j) {
 
     this.checkNeighbors = function() {
         var neighbors = [];
-        var top     = grid[index(i, j-1)],
-            right   = grid[index(i+1, j)],
-            bottom  = grid[index(i, j+1)],
-            left    = grid[index(i-1, j)];
+        var top = grid[index(i, j-1)], right = grid[index(i+1, j)], bottom = grid[index(i, j+1)], left = grid[index(i-1, j)];
         var cordinates = [top, right, bottom, left];
-        for(var i=0;i<cordinates.length;i++) {
-            if(!cordinates[i].visited) {
+  
+        for(let i=0;i<cordinates.length;i++) {
+            if(typeof cordinates[i] !== "undefined" && !cordinates[i].visited) {
                 neighbors.push(cordinates[i]);
-            }
+            } 
         }
-        console.log(neighbors);
+
+        for(let i=0;i<neighbors.length;i++) {
+            if(!neighbors[i].visited) {
+                var randNeighbor = floor(random(0, neighbors.length));
+                var next = neighbors[randNeighbor];
+                current = grid[index(next.i, next.j)];
+            }   
+        }
+
+        //console.log(neighbors);
     }
+
+    this.walls = function() {
+        var top = grid[index(i, j-1)], right = grid[index(i+1, j)], bottom = grid[index(i, j+1)], left = grid[index(i-1, j)];
+        var cordinates = [top, right, bottom, left];
+  
+        if(typeof cordinates[0] !== "undefined") {
+            this.walls = [false, true, true, true];
+        }
+        if(typeof cordinates[1] !== "undefined") {
+            this.walls = [true, false, true, true];
+        }
+        if(typeof cordinates[2] !== "undefined") {
+            this.walls = [true, true, false, true];
+        }
+        if(typeof cordinates[3] !== "undefined") {
+            this.walls = [true, true, false, true];
+        }
+    }
+
 }
