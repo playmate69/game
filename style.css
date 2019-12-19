@@ -23,43 +23,47 @@ h1,h2,h3,h4,h5,h6,span,a,p {
     color: #000;
 }
 
-.a-fixed {
-    position: fixed;
-}
-
-.a-absolute {
-    position: absolute;
-}
-
-.a-absolute.center {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.a-relative {
-    position: relative;
-}
-
-.a-full {
+.bg-video {
     width: 100%;
     height: 100%;
-}
-.a-table {
-    display: table;
-}
-.a-table--cell {
-    display: table-cell;
-    vertical-align: middle;
-}
-.a-text--center {
-    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
-.a-bg--img {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
+.bg-video > video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(5px);
+}
+
+#ipad {
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    height: 600px;
+}
+
+#ipad::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    height: 40px;
+    width: 100%;
+    left: 0;
+    background-image: url(asset--ipad__top.png);
+}
+
+#ipad::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    height: 40px;
+    width: 100%;
+    left: 0;
+    background-image: url(asset--ipad__bottom.png);
 }
 
 /*========================*/
